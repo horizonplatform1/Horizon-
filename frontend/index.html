@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataCoin - Digital Currency Powered by Internet Data</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            text-align: center;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #2a5298;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #2a5298, #1e3c72);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0.25rem;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(42, 82, 152, 0.4);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(45deg, #6c757d, #495057);
+        }
+
+        .btn.success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .btn.danger {
+            background: linear-gradient(45deg, #dc3545, #e74c3c);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #2a5298;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .transaction-list,
+        .wallet-list,
+        .source-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f8f9fa;
+        }
+
+        .transaction-item,
+        .wallet-item,
+        .source-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e1e5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .transaction-item:last-child,
+        .wallet-item:last-child,
+        .source-item:last-child {
+            border-bottom: none;
+        }
+
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2a5298;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .corporate-shares {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .share-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .share-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .balance-display {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🪙 DataCoin</h1>
+        <p>A revolutionary digital currency powered by internet data conversion</p>
+    </header>
+
+    <div class="container">
+        <!-- System Status Card -->
+        <div class="card">
+            <h2>🔧 System Status</h2>
+            <div id="systemStatus" class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalBlocks">-</div>
+                    <div class="stat-label">Total Blocks</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalTransactions">-</div>
+                    <div class="stat-label">Transactions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="miningDifficulty">-</div>
+                    <div class="stat-label">Difficulty</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="dataConverted">-</div>
+                    <div class="stat-label">Data (MB)</div>
+                </div>
+            </div>
+            <button class="btn" onclick="refreshSystemStatus()">🔄 Refresh Status</button>
+            <button class="btn secondary" onclick="resetSystem()">🔄 Reset System</button>
+        </div>
+
+        <!-- Wallet Management Card -->
+        <div class="card">
+            <h2>💼 Wallet Management</h2>
+            
+            <div class="form-group">
+                <label for="walletName">Wallet Name:</label>
+                <input type="text" id="walletName" placeholder="Enter wallet name">
+            </div>
+            <button class="btn" onclick="createWallet()">➕ Create Wallet</button>
+            <button class="btn secondary" onclick="loadWallets()">📋 List Wallets</button>
+            
+            <div id="currentWallet" class="hidden">
+                <div class="balance-display">
+                    <div>Current Balance</div>
+                    <div class="balance-amount" id="walletBalance">0.000000</div>
+                    <div>DataCoins</div>
+                </div>
+                <div class="form-group">
+                    <label for="recipient">Send To (Address):</label>
+                    <input type="text" id="recipient" placeholder="Recipient address">
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" step="0.000001" placeholder="0.000000">
+                </div>
+                <button class="btn success" onclick="sendTransaction()">💸 Send DataCoins</button>
+            </div>
+            
+            <div id="walletList" class="wallet-list hidden"></div>
+        </div>
+
+        <!-- Mining Control Card -->
+        <div class="card">
+            <h2>⛏️ Mining Control</h2>
+            
+            <div id="miningStatus" class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="miningActive">Inactive</div>
+                    <div class="stat-label">Mining Status</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="pendingTx">-</div>
+                    <div class="stat-label">Pending TX</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="miningReward">10</div>
+                    <div class="stat-label">Mining Reward</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="miningWallet">Mining Wallet:</label>
+                <select id="miningWallet">
+                    <option value="">Select wallet for mining</option>
+                </select>
+            </div>
+            
+            <button class="btn success" onclick="startMining()">🚀 Start Mining</button>
+            <button class="btn danger" onclick="stopMining()">⏹️ Stop Mining</button>
+            <button class="btn" onclick="mineSingleBlock()">⛏️ Mine One Block</button>
+            <button class="btn secondary" onclick="refreshMiningStatus()">🔄 Refresh</button>
+        </div>
+
+        <!-- Data Conversion Card -->
+        <div class="card">
+            <h2>🌐 Data Conversion</h2>
+            
+            <div id="dataStats" class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalSources">-</div>
+                    <div class="stat-label">Data Sources</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalDataCollected">-</div>
+                    <div class="stat-label">Data Collected (MB)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalCurrencyGenerated">-</div>
+                    <div class="stat-label">Currency Generated</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="conversionRate">-</div>
+                    <div class="stat-label">Conversion Rate</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="dataWallet">Conversion Wallet:</label>
+                <select id="dataWallet">
+                    <option value="">Select wallet for data conversion</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="manualDataSize">Manual Data Size (MB):</label>
+                <input type="number" id="manualDataSize" step="0.1" placeholder="1.0">
+            </div>
+            
+            <button class="btn" onclick="convertDataManual()">🔄 Convert Data Manually</button>
+            <button class="btn success" onclick="startAutoConversion()">🤖 Start Auto Conversion</button>
+            <button class="btn danger" onclick="stopAutoConversion()">⏹️ Stop Auto Conversion</button>
+            <button class="btn secondary" onclick="refreshDataStats()">🔄 Refresh</button>
+            
+            <div id="dataSourcesList" class="source-list"></div>
+        </div>
+
+        <!-- Corporate Shares Card -->
+        <div class="card">
+            <h2>🏢 Corporate Regulation</h2>
+            
+            <div id="corporateShares" class="corporate-shares">
+                <div class="share-item">
+                    <div class="share-value" id="googleShares">0</div>
+                    <div class="stat-label">Google Shares</div>
+                </div>
+                <div class="share-item">
+                    <div class="share-value" id="microsoftShares">0</div>
+                    <div class="stat-label">Microsoft Shares</div>
+                </div>
+                <div class="share-item">
+                    <div class="share-value" id="nbcShares">0</div>
+                    <div class="stat-label">NBC Universal Shares</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="shareWallet">Wallet for Share Purchase:</label>
+                <select id="shareWallet">
+                    <option value="">Select wallet</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="company">Company:</label>
+                <select id="company">
+                    <option value="Google">Google</option>
+                    <option value="Microsoft">Microsoft</option>
+                    <option value="NBC Universal">NBC Universal</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="shareCount">Number of Shares:</label>
+                <input type="number" id="shareCount" min="1" placeholder="1">
+            </div>
+            
+            <button class="btn" onclick="buyShares()">💰 Buy Shares (1000 DC/share)</button>
+            <button class="btn secondary" onclick="adjustDifficulty()">⚙️ Adjust Difficulty</button>
+            <button class="btn secondary" onclick="refreshCorporateShares()">🔄 Refresh</button>
+        </div>
+
+        <!-- Transaction History Card -->
+        <div class="card">
+            <h2>📋 Recent Transactions</h2>
+            <div id="transactionHistory" class="transaction-list">
+                <p>Select a wallet to view transactions</p>
+            </div>
+            <button class="btn secondary" onclick="refreshTransactions()">🔄 Refresh</button>
+        </div>
+    </div>
+
+    <!-- Alert container -->
+    <div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 400px;"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let currentWalletName = null;
+        let selectedWallets = [];
+
+        // Utility functions
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${type}`;
+            alertDiv.textContent = message;
+            
+            alertContainer.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        async function apiCall(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API call failed:', error);
+                showAlert(`API Error: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        // System status functions
+        async function refreshSystemStatus() {
+            const stats = await apiCall('/blockchain/stats');
+            if (stats) {
+                document.getElementById('totalBlocks').textContent = stats.total_blocks;
+                document.getElementById('totalTransactions').textContent = stats.total_transactions;
+                document.getElementById('miningDifficulty').textContent = stats.current_difficulty;
+                document.getElementById('dataConverted').textContent = stats.total_data_converted_mb.toFixed(3);
+            }
+
+            const health = await apiCall('/system/health');
+            if (health) {
+                showAlert(`System Status: ${health.status.toUpperCase()}`, 'success');
+            }
+        }
+
+        async function resetSystem() {
+            if (confirm('Are you sure you want to reset the entire system? This will delete all data.')) {
+                const result = await apiCall('/system/reset', { method: 'POST' });
+                if (result) {
+                    showAlert('System reset successfully', 'success');
+                    currentWalletName = null;
+                    document.getElementById('currentWallet').classList.add('hidden');
+                    await refreshAll();
+                }
+            }
+        }
+
+        // Wallet management functions
+        async function createWallet() {
+            const walletName = document.getElementById('walletName').value.trim();
+            if (!walletName) {
+                showAlert('Please enter a wallet name', 'error');
+                return;
+            }
+
+            const result = await apiCall('/wallets/create', {
+                method: 'POST',
+                body: JSON.stringify({ wallet_name: walletName })
+            });
+
+            if (result) {
+                showAlert(`Wallet "${walletName}" created successfully!`, 'success');
+                document.getElementById('walletName').value = '';
+                currentWalletName = walletName;
+                await loadWalletData(walletName);
+                await loadWallets();
+            }
+        }
+
+        async function loadWallets() {
+            const wallets = await apiCall('/wallets');
+            if (wallets) {
+                selectedWallets = wallets;
+                updateWalletSelectors();
+                displayWalletList(wallets);
+            }
+        }
+
+        function updateWalletSelectors() {
+            const selectors = ['miningWallet', 'dataWallet', 'shareWallet'];
+            selectors.forEach(selectorId => {
+                const selector = document.getElementById(selectorId);
+                selector.innerHTML = '<option value="">Select wallet</option>';
+                selectedWallets.forEach(wallet => {
+                    const option = document.createElement('option');
+                    option.value = wallet;
+                    option.textContent = wallet;
+                    selector.appendChild(option);
+                });
+            });
+        }
+
+        function displayWalletList(wallets) {
+            const listContainer = document.getElementById('walletList');
+            listContainer.innerHTML = '';
+            
+            wallets.forEach(wallet => {
+                const walletItem = document.createElement('div');
+                walletItem.className = 'wallet-item';
+                walletItem.innerHTML = `
+                    <span>${wallet}</span>
+                    <button class="btn" onclick="loadWalletData('${wallet}')">Select</button>
+                `;
+                listContainer.appendChild(walletItem);
+            });
+            
+            listContainer.classList.remove('hidden');
+        }
+
+        async function loadWalletData(walletName) {
+            const wallet = await apiCall(`/wallets/${walletName}`);
+            if (wallet) {
+                currentWalletName = walletName;
+                document.getElementById('walletBalance').textContent = wallet.balance.toFixed(6);
+                document.getElementById('currentWallet').classList.remove('hidden');
+                showAlert(`Loaded wallet: ${walletName}`, 'success');
+                await refreshTransactions();
+            }
+        }
+
+        async function sendTransaction() {
+            if (!currentWalletName) {
+                showAlert('Please select a wallet first', 'error');
+                return;
+            }
+
+            const recipient = document.getElementById('recipient').value.trim();
+            const amount = parseFloat(document.getElementById('amount').value);
+
+            if (!recipient || isNaN(amount) || amount <= 0) {
+                showAlert('Please enter valid recipient and amount', 'error');
+                return;
+            }
+
+            const result = await apiCall(`/wallets/${currentWalletName}/transaction`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    recipient: recipient,
+                    amount: amount,
+                    tx_type: 'transfer'
+                })
+            });
+
+            if (result) {
+                showAlert(`Transaction sent successfully! TX ID: ${result.tx_id.substring(0, 16)}...`, 'success');
+                document.getElementById('recipient').value = '';
+                document.getElementById('amount').value = '';
+                await loadWalletData(currentWalletName);
+            }
+        }
+
+        // Mining functions
+        async function refreshMiningStatus() {
+            const status = await apiCall('/mining/status');
+            if (status) {
+                document.getElementById('miningActive').textContent = status.active ? 'Active' : 'Inactive';
+                document.getElementById('pendingTx').textContent = status.pending_transactions;
+                document.getElementById('miningReward').textContent = status.mining_reward;
+            }
+        }
+
+        async function startMining() {
+            const walletName = document.getElementById('miningWallet').value;
+            if (!walletName) {
+                showAlert('Please select a mining wallet', 'error');
+                return;
+            }
+
+            const result = await apiCall(`/mining/start/${walletName}`, { method: 'POST' });
+            if (result) {
+                showAlert(result.message, 'success');
+                await refreshMiningStatus();
+            }
+        }
+
+        async function stopMining() {
+            const result = await apiCall('/mining/stop', { method: 'POST' });
+            if (result) {
+                showAlert(result.message, 'info');
+                await refreshMiningStatus();
+            }
+        }
+
+        async function mineSingleBlock() {
+            const walletName = document.getElementById('miningWallet').value;
+            if (!walletName) {
+                showAlert('Please select a mining wallet', 'error');
+                return;
+            }
+
+            showAlert('Mining block... this may take a moment', 'info');
+            const result = await apiCall(`/mining/mine/${walletName}`, { method: 'POST' });
+            if (result) {
+                showAlert(`Block ${result.block_index} mined successfully! Reward: ${result.reward} DC`, 'success');
+                await refreshAll();
+            }
+        }
+
+        // Data conversion functions
+        async function refreshDataStats() {
+            const stats = await apiCall('/data/stats');
+            if (stats) {
+                document.getElementById('totalSources').textContent = stats.total_sources;
+                document.getElementById('totalDataCollected').textContent = stats.total_data_collected_mb.toFixed(3);
+                document.getElementById('totalCurrencyGenerated').textContent = stats.total_currency_generated.toFixed(6);
+                document.getElementById('conversionRate').textContent = stats.conversion_rate.toFixed(6);
+            }
+
+            const sources = await apiCall('/data/sources');
+            if (sources) {
+                displayDataSources(sources);
+            }
+        }
+
+        function displayDataSources(sources) {
+            const container = document.getElementById('dataSourcesList');
+            container.innerHTML = '<h3>Data Sources:</h3>';
+            
+            sources.forEach(source => {
+                const sourceItem = document.createElement('div');
+                sourceItem.className = 'source-item';
+                sourceItem.innerHTML = `
+                    <div>
+                        <strong>${source.source_id}</strong> (${source.source_type})
+                        <br><small>${source.url}</small>
+                        <br><small>Generated: ${source.currency_generated.toFixed(6)} DC</small>
+                    </div>
+                    <button class="btn" onclick="collectFromSource('${source.source_id}')">Collect</button>
+                `;
+                container.appendChild(sourceItem);
+            });
+        }
+
+        async function convertDataManual() {
+            const walletName = document.getElementById('dataWallet').value;
+            const dataSize = parseFloat(document.getElementById('manualDataSize').value);
+
+            if (!walletName) {
+                showAlert('Please select a wallet for data conversion', 'error');
+                return;
+            }
+
+            if (isNaN(dataSize) || dataSize <= 0) {
+                showAlert('Please enter a valid data size', 'error');
+                return;
+            }
+
+            const result = await apiCall(`/data/convert/${walletName}`, {
+                method: 'POST',
+                body: JSON.stringify({ data_size_mb: dataSize })
+            });
+
+            if (result) {
+                showAlert(`Converted ${dataSize} MB to ${result.amount} DataCoins`, 'success');
+                await refreshDataStats();
+                if (currentWalletName === walletName) {
+                    await loadWalletData(walletName);
+                }
+            }
+        }
+
+        async function collectFromSource(sourceId) {
+            const walletName = document.getElementById('dataWallet').value;
+            if (!walletName) {
+                showAlert('Please select a wallet for data conversion', 'error');
+                return;
+            }
+
+            const result = await apiCall(`/data/collect/${sourceId}/${walletName}`, { method: 'POST' });
+            if (result) {
+                showAlert(`Collected data from ${sourceId}: ${result.amount} DC`, 'success');
+                await refreshDataStats();
+                if (currentWalletName === walletName) {
+                    await loadWalletData(walletName);
+                }
+            }
+        }
+
+        async function startAutoConversion() {
+            const walletName = document.getElementById('dataWallet').value;
+            if (!walletName) {
+                showAlert('Please select a wallet for data conversion', 'error');
+                return;
+            }
+
+            const result = await apiCall(`/data/auto-convert/start/${walletName}`, { method: 'POST' });
+            if (result) {
+                showAlert(result.message, 'success');
+            }
+        }
+
+        async function stopAutoConversion() {
+            const result = await apiCall('/data/auto-convert/stop', { method: 'POST' });
+            if (result) {
+                showAlert(result.message, 'info');
+            }
+        }
+
+        // Corporate shares functions
+        async function refreshCorporateShares() {
+            const shares = await apiCall('/corporate/shares');
+            if (shares) {
+                document.getElementById('googleShares').textContent = shares.Google || 0;
+                document.getElementById('microsoftShares').textContent = shares.Microsoft || 0;
+                document.getElementById('nbcShares').textContent = shares['NBC Universal'] || 0;
+            }
+        }
+
+        async function buyShares() {
+            const walletName = document.getElementById('shareWallet').value;
+            const company = document.getElementById('company').value;
+            const shareCount = parseInt(document.getElementById('shareCount').value);
+
+            if (!walletName || !company || isNaN(shareCount) || shareCount <= 0) {
+                showAlert('Please fill in all fields correctly', 'error');
+                return;
+            }
+
+            const result = await apiCall(`/wallets/${walletName}/shares`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    company: company,
+                    shares: shareCount
+                })
+            });
+
+            if (result) {
+                showAlert(`Purchased ${shareCount} shares of ${company}`, 'success');
+                await refreshCorporateShares();
+                if (currentWalletName === walletName) {
+                    await loadWalletData(walletName);
+                }
+            }
+        }
+
+        async function adjustDifficulty() {
+            const result = await apiCall('/corporate/adjust-difficulty', { method: 'POST' });
+            if (result) {
+                showAlert(`Difficulty adjusted from ${result.old_difficulty} to ${result.new_difficulty}`, 'info');
+                await refreshSystemStatus();
+            }
+        }
+
+        // Transaction history
+        async function refreshTransactions() {
+            if (!currentWalletName) return;
+
+            const transactions = await apiCall(`/wallets/${currentWalletName}/transactions`);
+            if (transactions) {
+                displayTransactions(transactions);
+            }
+        }
+
+        function displayTransactions(transactions) {
+            const container = document.getElementById('transactionHistory');
+            container.innerHTML = '';
+
+            if (transactions.length === 0) {
+                container.innerHTML = '<p>No transactions found</p>';
+                return;
+            }
+
+            transactions.slice(0, 10).forEach(tx => {
+                const txItem = document.createElement('div');
+                txItem.className = 'transaction-item';
+                const date = new Date(tx.timestamp * 1000).toLocaleString();
+                txItem.innerHTML = `
+                    <div>
+                        <strong>${tx.tx_type}</strong>
+                        <br><small>${tx.amount.toFixed(6)} DC</small>
+                        <br><small>${date}</small>
+                    </div>
+                    <div>
+                        <small>${tx.tx_id.substring(0, 8)}...</small>
+                    </div>
+                `;
+                container.appendChild(txItem);
+            });
+        }
+
+        // Refresh all data
+        async function refreshAll() {
+            await refreshSystemStatus();
+            await refreshMiningStatus();
+            await refreshDataStats();
+            await refreshCorporateShares();
+            await loadWallets();
+            if (currentWalletName) {
+                await loadWalletData(currentWalletName);
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', async () => {
+            showAlert('DataCoin system initialized', 'success');
+            await refreshAll();
+            
+            // Auto-refresh every 30 seconds
+            setInterval(async () => {
+                await refreshSystemStatus();
+                await refreshMiningStatus();
+                if (currentWalletName) {
+                    const wallet = await apiCall(`/wallets/${currentWalletName}`);
+                    if (wallet) {
+                        document.getElementById('walletBalance').textContent = wallet.balance.toFixed(6);
+                    }
+                }
+            }, 30000);
+        });
+    </script>
+</body>
+</html>
