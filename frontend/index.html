@@ -2,8 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>DataCoin - Digital Currency Powered by Internet Data</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="A revolutionary digital currency that converts internet data into cryptocurrency with blockchain mining and wallet management.">
+    <meta name="theme-color" content="#2a5298">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DataCoin">
+    <meta name="msapplication-TileColor" content="#2a5298">
+    <meta name="msapplication-tap-highlight" content="no">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/pwa/manifest.json">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/datacoin-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/datacoin-16x16.png">
+    <link rel="apple-touch-icon" href="/icons/datacoin-180x180.png">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/pwa/service-worker.js" as="script">
+    
+    <!-- Mobile optimizations -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
     <style>
         * {
             margin: 0;
@@ -918,6 +942,9 @@
             showAlert('DataCoin system initialized', 'success');
             await refreshAll();
             
+            // Initialize PWA
+            initializePWA();
+            
             // Auto-refresh every 30 seconds
             setInterval(async () => {
                 await refreshSystemStatus();
@@ -929,6 +956,141 @@
                     }
                 }
             }, 30000);
+        });
+
+        // PWA initialization
+        function initializePWA() {
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/pwa/service-worker.js')
+                    .then(registration => {
+                        console.log('🪙 DataCoin Service Worker registered successfully');
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    showAlert('New version available! Refresh to update.', 'info');
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.log('❌ Service Worker registration failed:', error);
+                    });
+            }
+
+            // PWA install prompt
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                showInstallButton();
+            });
+
+            function showInstallButton() {
+                const installButton = document.createElement('button');
+                installButton.className = 'btn success';
+                installButton.innerHTML = '📱 Install DataCoin App';
+                installButton.style.position = 'fixed';
+                installButton.style.bottom = '20px';
+                installButton.style.right = '20px';
+                installButton.style.zIndex = '1001';
+                
+                installButton.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        
+                        if (outcome === 'accepted') {
+                            showAlert('DataCoin app installed successfully!', 'success');
+                        }
+                        
+                        deferredPrompt = null;
+                        installButton.remove();
+                    }
+                });
+                
+                document.body.appendChild(installButton);
+                
+                // Auto-hide after 10 seconds
+                setTimeout(() => {
+                    if (installButton.parentNode) {
+                        installButton.remove();
+                    }
+                }, 10000);
+            }
+
+            // Handle app installed
+            window.addEventListener('appinstalled', () => {
+                showAlert('DataCoin app installed successfully!', 'success');
+                deferredPrompt = null;
+            });
+
+            // Enable notifications (if supported)
+            if ('Notification' in window && 'serviceWorker' in navigator) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('📱 Notifications enabled');
+                    }
+                });
+            }
+
+            // Handle PWA shortcuts
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            
+            if (action) {
+                handlePWAShortcut(action);
+            }
+        }
+
+        // Handle PWA shortcuts
+        function handlePWAShortcut(action) {
+            switch(action) {
+                case 'create-wallet':
+                    document.getElementById('walletName').focus();
+                    showAlert('Create a new wallet to get started!', 'info');
+                    break;
+                case 'mine':
+                    showAlert('Select a wallet and start mining!', 'info');
+                    break;
+                case 'convert-data':
+                    showAlert('Convert internet data to DataCoins!', 'info');
+                    break;
+            }
+        }
+
+        // Enhanced mobile touch handlers
+        document.addEventListener('touchstart', function(e) {
+            // Prevent zoom on double tap for better mobile experience
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        });
+
+        // Prevent context menu on long press (mobile)
+        document.addEventListener('contextmenu', function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+            }
+        });
+
+        // Handle device orientation
+        window.addEventListener('orientationchange', function() {
+            setTimeout(function() {
+                window.scrollTo(0, 1);
+            }, 500);
+        });
+
+        // Network status monitoring
+        window.addEventListener('online', function() {
+            showAlert('Connection restored! Syncing data...', 'success');
+        });
+
+        window.addEventListener('offline', function() {
+            showAlert('Offline mode - some features may be limited', 'info');
         });
     </script>
 </body>

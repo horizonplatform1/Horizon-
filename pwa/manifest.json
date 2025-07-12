@@ -1,0 +1,133 @@
+{
+  "name": "DataCoin - Digital Currency Powered by Internet Data",
+  "short_name": "DataCoin",
+  "description": "A revolutionary digital currency that converts internet data into cryptocurrency with blockchain mining and wallet management.",
+  "version": "1.0.0",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e3c72",
+  "theme_color": "#2a5298",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["finance", "productivity", "business"],
+  "icons": [
+    {
+      "src": "icons/datacoin-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/datacoin-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/datacoin-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/datacoin-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/datacoin-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/datacoin-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/datacoin-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/datacoin-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/datacoin-mobile-1.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "DataCoin Mobile Dashboard"
+    },
+    {
+      "src": "screenshots/datacoin-mobile-2.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "DataCoin Wallet Management"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Create Wallet",
+      "short_name": "New Wallet",
+      "description": "Create a new DataCoin wallet",
+      "url": "/?action=create-wallet",
+      "icons": [
+        {
+          "src": "icons/wallet-icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Mine DataCoins",
+      "short_name": "Mine",
+      "description": "Start mining DataCoins",
+      "url": "/?action=mine",
+      "icons": [
+        {
+          "src": "icons/mining-icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Data Conversion",
+      "short_name": "Convert Data",
+      "description": "Convert internet data to currency",
+      "url": "/?action=convert-data",
+      "icons": [
+        {
+          "src": "icons/data-icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.datacoin.android",
+      "id": "com.datacoin.android"
+    }
+  ],
+  "features": [
+    "Cross Platform",
+    "Background Sync",
+    "Offline Storage",
+    "Push Notifications"
+  ],
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7"
+}
